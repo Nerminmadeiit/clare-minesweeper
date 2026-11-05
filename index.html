@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Claré — The Minesweeper Edition</title>
+    <meta name="theme-color" content="#0E0E0E" />
+    <link rel="icon" type="image/png" href="assets/logowcolor.png" />
+
+    <script src="script.js" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="app-header">
+        <h1 class="brand">
+          <img
+            class="brand-logo"
+            src="assets/logowcolor.png"
+            alt="Claré"
+            width="312"
+            height="490"
+          />
+          <span class="brand-sub">The Minesweeper Edition</span>
+        </h1>
+        <p class="tagline">Clear the ice. Avoid what lies beneath.</p>
+      </header>
+
+      <section
+        class="player-card glass"
+        id="player-card"
+        aria-labelledby="player-title"
+      >
+        <h2 class="card-title" id="player-title">Who's playing?</h2>
+
+        <form class="player-form" id="register-form" novalidate>
+          <label for="username" class="stat-label">New player</label>
+          <div class="input-row">
+            <input
+              type="text"
+              id="username"
+              name="username"
+              class="input"
+              maxlength="20"
+              autocomplete="nickname"
+              spellcheck="false"
+              aria-describedby="username-help"
+            />
+            <button type="submit" class="btn btn-primary">Register</button>
+          </div>
+          <p class="field-help" id="username-help">3–20 characters</p>
+        </form>
+
+        <div class="divider" aria-hidden="true"><span>or</span></div>
+
+        <form class="player-form" id="existing-form">
+          <label for="player-select" class="stat-label">Existing player</label>
+          <div class="input-row">
+            <select id="player-select" class="select"></select>
+            <button type="submit" class="btn btn-secondary">Continue</button>
+          </div>
+        </form>
+
+        <!-- Fejl og beskeder. aria-live betyder, at skærmlæsere læser dem op -->
+        <p class="player-message" id="player-message" aria-live="polite"></p>
+      </section>
+
+      <!-- Hvem der spiller nu. Vises, når en spiller er valgt. -->
+      <div class="current-player glass" id="current-player" hidden>
+        <p class="current-player-text">
+          <span class="stat-label">Playing as</span>
+          <strong id="current-player-name"></strong>
+        </p>
+        <button
+          type="button"
+          class="btn btn-secondary btn-small"
+          id="switch-player-btn"
+        >
+          Switch player
+        </button>
+      </div>
+
+      <!-- Spilkortet: statuslinje + plade. Skjult, indtil en spiller er valgt. -->
+      <section class="game-card glass" aria-label="Minesweeper game" hidden>
+        <!-- Kontroller: tidsgrænse + knapper -->
+        <div class="controls">
+          <div class="field">
+            <label for="time-limit" class="stat-label">Time limit</label>
+            <select id="time-limit" class="select">
+              <!-- Værdierne er i sekunder -->
+              <option value="60">1 minute</option>
+              <option value="120">2 minutes</option>
+              <option value="180" selected>3 minutes</option>
+              <option value="300">5 minutes</option>
+              <option value="600">10 minutes</option>
+            </select>
+          </div>
+
+          <div class="control-buttons">
+            <button type="button" class="btn btn-primary" id="new-game-btn">
+              New Game
+            </button>
+          </div>
+        </div>
+
+        <!-- Spillets tal, der opdateres løbende -->
+        <div class="status-bar">
+          <div class="stat">
+            <span class="stat-label">Mines</span>
+            <span class="stat-value" id="mine-counter">10</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Elapsed</span>
+            <span class="stat-value" id="elapsed">00:00</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Remaining</span>
+            <span class="stat-value" id="remaining">03:00</span>
+          </div>
+        </div>
+
+        <!-- Gitteret af felter bliver lavet af script.js -->
+        <div
+          class="board"
+          id="board"
+          role="grid"
+          aria-label="Minefield, 8 by 8"
+        ></div>
+
+        <p class="hint">
+          Right-click or press <kbd>F</kbd> to place a flag. On a touch screen,
+          press and hold. Arrow keys move between squares.
+        </p>
+
+        <!-- Beskeder til spilleren (vundet/tabt). aria-live betyder, at skærmlæsere læser ændringer op -->
+        <p class="game-message" id="game-message" aria-live="polite"></p>
+      </section>
+
+      <!-- Leaderboard: den aktuelle spillers tre bedste tider.
+           Fyldes ud af script.js. Skjult, indtil en spiller er valgt. -->
+      <section
+        class="leaderboard-card glass"
+        id="leaderboard"
+        aria-labelledby="leaderboard-title"
+        hidden
+      >
+        <div class="leaderboard-header">
+          <h2 class="card-title" id="leaderboard-title">Best times</h2>
+          <p class="leaderboard-player">
+            <span class="stat-label">Player</span>
+            <strong id="leaderboard-player"></strong>
+          </p>
+        </div>
+
+        <ol
+          class="score-list"
+          id="score-list"
+          aria-label="Three fastest completion times"
+        ></ol>
+        <p class="leaderboard-note" id="leaderboard-note" hidden></p>
+
+        <!-- Viser "gemt" efter en sejr. aria-live: læses op af skærmlæsere -->
+        <p class="save-status" id="save-status" aria-live="polite"></p>
+      </section>
+    </main>
+  </body>
+</html>

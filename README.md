@@ -38,4 +38,3 @@ You don't need to install anything, and there's no `npm install` or server to st
 - Opening the game in another browser or on another computer starts with no players.
 - Opening `index.html` directly and opening it through Live Server count as two different addresses, so they each have their own players.
 - Clearing the browser's data deletes the saved players.
-# clare-minesweeper
